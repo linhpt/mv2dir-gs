@@ -6,14 +6,15 @@ function OnSubmit(e) {
     
     var destinationFolderId = folder.getId();
     var sheet = SpreadsheetApp.getActiveSheet();
-    var range = sheet.getRange(2, 1, sheet.getLastRow() - 1, 3);
+    var range = sheet.getRange(2, 1, sheet.getLastRow() - 1, 4);
     var rows = range.getValues();
     
     var lastAppendedRow = rows[rows.length - 1];
     var fileInfo = {
       date: lastAppendedRow[0],
       mssv: lastAppendedRow[1],
-      fileId: lastAppendedRow[2].substring(lastAppendedRow[2].indexOf("=") + 1, lastAppendedRow[2].length)
+      fileId: lastAppendedRow[2].substring(lastAppendedRow[2].indexOf("=") + 1, lastAppendedRow[2].length),
+      privateKey: lastAppendedRow[3]
     }
     
     moveFileTo(fileInfo, destinationFolderId);
@@ -25,11 +26,12 @@ function OnSubmit(e) {
     var fullName = targetFile.getName();
     var fileName = fullName.substr(0, fullName.indexOf(' '));
     var randomNumber = new Date(fileInfo.date).getTime();
+    var privateKey = fileInfo.privateKey;
     
     var extension = fullName.substr(fullName.indexOf('.'), fullName.length);
     
     if (targetFile) {
-      var newFileName = randomNumber + '[' + fileInfo.mssv + '][' + fileName + ']' + extension;
+      var newFileName = randomNumber + '[' + privateKey + '][' + fileInfo.mssv + '][' + fileName + ']' + extension;
       
       var parentFolders = targetFile.getParents();
       while(parentFolders.hasNext()) {
